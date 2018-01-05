@@ -42,6 +42,7 @@ var contentHighlightWorker = function(element, options){
     highlightableId: options.highlightableId || "",
     highlightableColumn: options.highlightableColumn || "",
     readOnly: options.readOnly || false,
+    confirmHighlight: options.confirmHighlight || false,
     nodeIdentifierKey: options.nodeIdentifierKey || "chnode",
     highlightClass: options.highlightClass || "content-highlight",
     highlightIdentifyClassRoot: options.highlightIdentifyClassRoot || "content-highlight-identifier-",
@@ -63,7 +64,11 @@ var contentHighlightWorker = function(element, options){
     rangy.init();
     this.getContentHighlightsFromServer();
     if (!this.settings.readOnly) {
-      element.addEventListener('mouseup', this.showPopTipForSelection);
+      if (this.settings.confirmHighlight) {
+        element.addEventListener('mouseup', this.showPopTipForSelection);
+      } else {
+        element.addEventListener('mouseup', this.initializeHighlighter);
+      }
     }
   }
 
