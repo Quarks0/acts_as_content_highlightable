@@ -63,8 +63,43 @@ var contentHighlightWorker = function(element, options){
     rangy.init();
     this.getContentHighlightsFromServer();
     if (!this.settings.readOnly) {
-      element.addEventListener('mouseup', this.initializeHighlighter);
+      element.addEventListener('mouseup', this.showPopTipForSelection);
     }
+  }
+
+  this.showPopTipForSelection = function(event){
+    var selection = rangy.getSelection();
+    if (selection.isCollapsed == false && selection.rangeCount > 0) {
+      event.stopPropagation();
+      var classApplier = rangy.createClassApplier('temp-selection');
+      classApplier.applyToSelection();
+      var selectionElement = element.getElementsByClassName('temp-selection')[0];
+      if (!!self.popTip) {
+        if (event.target.classList.contains('poptip-action')) {
+          return;
+        }
+        self.removePopTip();
+      }
+      self.buildPopupFromSelection();
+      self.popTip.style.top = selectionElement.offsetTop + selectionElement.offsetHeight + "px";
+      self.popTip.style.left = selectionElement.offsetLeft + 10 + "px";
+      self.element.appendChild(self.popTip);
+      setTimeout(function(){
+        window.addEventListener('resize', self.removePopTip);
+        document.addEventListener('click', self.removePopTip);
+        }, 50);
+      classApplier.undoToSelection();
+    }
+  }
+
+  this.buildPopupFromSelection = function(){
+    self.popTip = document.createElement('div');
+    self.popTip.className = self.settings.popTipClass;
+    self.popTip.innerHTML = "<a href='javascript:void(0);' class='poptip-action'>Add Highlight</a>";
+    self.popTip.getElementsByClassName('poptip-action')[0].addEventListener('click', function(){
+      self.removePopTip();
+      self.initializeHighlighter();
+    });
   }
 
   this.initializeHighlighter = function(){
@@ -305,9 +340,9 @@ var contentHighlightWorker = function(element, options){
     self.popTip.className = self.settings.popTipClass;
     self.popTip.innerHTML = "<span class='description'>" + (highlightElement.dataset.description || self.settings.popTipDefaultHead)+ "</span>";
     if(highlightElement.dataset.removable == "true"){
-      self.popTip.innerHTML += "<a href='javascript:void(0);' class='cancel_highlight'>click to remove</a>";
-      if(self.popTip.getElementsByClassName('cancel_highlight')[0] != undefined){
-        self.popTip.getElementsByClassName('cancel_highlight')[0].addEventListener('click', function(){
+      self.popTip.innerHTML += "<a href='javascript:void(0);' class='poptip-action'>click to remove</a>";
+      if(self.popTip.getElementsByClassName('poptip-action')[0] != undefined){
+        self.popTip.getElementsByClassName('poptip-action')[0].addEventListener('click', function(){
           self.removePopTip();
           self.removeContentHighlightsFromServer(highlightElement);
         });

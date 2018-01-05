@@ -31,7 +31,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.content-highlight-poptip .cancel_highlight{
+.content-highlight-poptip .poptip-action{
   font-size: 80%;
   text-decoration: underline;
   color: inherit;
