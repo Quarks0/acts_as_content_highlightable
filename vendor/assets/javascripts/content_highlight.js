@@ -76,15 +76,15 @@ var contentHighlightWorker = function(element, options){
     var selection = rangy.getSelection();
     if (selection.isCollapsed == false && selection.rangeCount > 0) {
       event.stopPropagation();
-      var classApplier = rangy.createClassApplier('temp-selection');
-      classApplier.applyToSelection();
-      var selectionElement = element.getElementsByClassName('temp-selection')[0];
       if (!!self.popTip) {
         if (event.target.classList.contains('poptip-action')) {
           return;
         }
         self.removePopTip();
       }
+      var classApplier = rangy.createClassApplier('temp-selection');
+      classApplier.applyToSelection();
+      var selectionElement = element.getElementsByClassName('temp-selection')[0];
       self.buildPopupFromSelection();
       self.popTip.style.top = selectionElement.offsetTop + selectionElement.offsetHeight + "px";
       self.popTip.style.left = selectionElement.offsetLeft + 10 + "px";
@@ -102,8 +102,8 @@ var contentHighlightWorker = function(element, options){
     self.popTip.className = self.settings.popTipClass;
     self.popTip.innerHTML = "<a href='javascript:void(0);' class='poptip-action'>Add Highlight</a>";
     self.popTip.getElementsByClassName('poptip-action')[0].addEventListener('click', function(){
-      self.removePopTip();
       self.initializeHighlighter();
+      self.removePopTip();
     });
   }
 
@@ -113,9 +113,10 @@ var contentHighlightWorker = function(element, options){
     if(selection.isCollapsed == false && selection.rangeCount > 0){
       range = selection.getRangeAt(0);
       commonAncestor = range.commonAncestorContainer;
+      var element = this.element || this;
       while(commonAncestor.dataset == undefined || commonAncestor.dataset[self.settings.nodeIdentifierKey] == undefined){
         commonAncestor = commonAncestor.parentNode;
-        if(commonAncestor == undefined || commonAncestor.contains(this)){
+        if(commonAncestor == undefined || commonAncestor.contains(element)){
           return;
         }
       }
