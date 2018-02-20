@@ -43,6 +43,7 @@ var contentHighlightWorker = function(element, options){
     highlightableColumn: options.highlightableColumn || "",
     readOnly: options.readOnly || false,
     confirmHighlight: options.confirmHighlight || false,
+    showDiscussion: options.showDiscussionCallback || false,
     nodeIdentifierKey: options.nodeIdentifierKey || "chnode",
     highlightClass: options.highlightClass || "content-highlight",
     highlightIdentifyClassRoot: options.highlightIdentifyClassRoot || "content-highlight-identifier-",
@@ -347,11 +348,19 @@ var contentHighlightWorker = function(element, options){
     self.popTip.innerHTML = "<span class='description'>" + (highlightElement.dataset.description || self.settings.popTipDefaultHead)+ "</span>";
     if(highlightElement.dataset.removable == "true"){
       self.popTip.innerHTML += "<a href='javascript:void(0);' class='poptip-action'>click to remove</a>";
-      if(self.popTip.getElementsByClassName('poptip-action')[0] != undefined){
-        self.popTip.getElementsByClassName('poptip-action')[0].addEventListener('click', function(){
-          self.removePopTip();
-          self.removeContentHighlightsFromServer(highlightElement);
-        });
+      if (this.settings.showDiscussion) {
+        self.popTip.innerHTML += "<a href='javascript:void(0);' class='poptip-action'>discuss</a>";
+        if(self.popTip.getElementsByClassName('poptip-action')[1] != undefined){
+          self.popTip.getElementsByClassName('poptip-action')[1].addEventListener('click', function(){
+            self.settings.showDiscussion(highlightElement);
+          });
+        }
+        if(self.popTip.getElementsByClassName('poptip-action')[0] != undefined){
+          self.popTip.getElementsByClassName('poptip-action')[0].addEventListener('click', function(){
+            self.removePopTip();
+            self.removeContentHighlightsFromServer(highlightElement);
+          });
+        }
       }
     }
   }

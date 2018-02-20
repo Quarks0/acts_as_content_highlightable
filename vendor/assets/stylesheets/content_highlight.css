@@ -33,6 +33,7 @@
 }
 .content-highlight-poptip .poptip-action{
   font-size: 80%;
+  display: block;
   text-decoration: underline;
   color: inherit;
 }
