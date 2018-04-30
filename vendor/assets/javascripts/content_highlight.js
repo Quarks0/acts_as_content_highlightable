@@ -355,12 +355,12 @@ var contentHighlightWorker = function(element, options){
             self.settings.showDiscussion(highlightElement);
           });
         }
-        if(self.popTip.getElementsByClassName('poptip-action')[0] != undefined){
-          self.popTip.getElementsByClassName('poptip-action')[0].addEventListener('click', function(){
-            self.removePopTip();
-            self.removeContentHighlightsFromServer(highlightElement);
-          });
-        }
+      }
+      if(self.popTip.getElementsByClassName('poptip-action')[0] != undefined){
+        self.popTip.getElementsByClassName('poptip-action')[0].addEventListener('click', function(){
+          self.removePopTip();
+          self.removeContentHighlightsFromServer(highlightElement);
+        });
       }
     }
   }
